@@ -35,12 +35,15 @@ def add_features(df):
     df_['haversine'] = haversine(df_['lat'], df_['lon'],
                                  df_['merchant_lat'], df_['merchant_lon'])
     df_["transaction_time"] = pd.to_datetime(df_["transaction_time"])
-    df_["year"] = df_["transaction_time"].dt.year
-    df_["month"] = df_["transaction_time"].dt.month
-    df_["day"] = df_["transaction_time"].dt.day
+    #df_["year"] = df_["transaction_time"].dt.year
+    #df_["month"] = df_["transaction_time"].dt.month
+    #df_["day"] = df_["transaction_time"].dt.day 
     df_["hour"] = df_["transaction_time"].dt.hour
+    df_["hour_sin"] = np.sin(2 * np.pi * df_["hour"]/24)
+    df_["hour_cos"] = np.cos(2 * np.pi * df_["hour"]/24)
     df_["minute"] = df_["transaction_time"].dt.minute
     df_["weekend"] = (df_["transaction_time"].dt.dayofweek > 4).astype(int)
+    df_["night_transaction"] = ((df_["hour"] >= 23) | (df_["hour"] <= 3)).astype(int)
     return df_.drop(columns=["transaction_time", "name_1", "name_2", "street"])
 
 
